@@ -77,7 +77,20 @@ def main(page: ft.Page):
                     "type": "text"
                 })
 
-            return f"Dorćolac: {response.choices[0].message.content}"
+            greeting_message = response.choices[0].message.content
+
+            session = SessionLocal()
+            # Store user message in SessionMessage
+            user_session_message = SessionMessage(
+                session_id=current_db_session.id,
+                role="assistant",
+                content=greeting_message,
+                timestamp=datetime.now()
+            )
+            session.add(user_session_message)
+            session.commit()
+
+            return f"Dorćolac: {greeting_message}"
 
         def generate_message(role: str, text: str):
             return {
